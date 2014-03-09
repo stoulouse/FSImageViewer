@@ -63,7 +63,7 @@
         [self addSubview:scrollView];
         _scrollView = scrollView;
 
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        AsyncImageView *imageView = [[AsyncImageView alloc] initWithFrame:self.bounds];
         imageView.opaque = YES;
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         imageView.tag = ZOOM_VIEW_TAG;
@@ -83,9 +83,9 @@
 }
 
 - (void)dealloc {
-    if (_image) {
-        [[FSImageLoader sharedInstance] cancelRequestForUrl:self.image.URL];
-    }
+//    if (_image) {
+//        [[FSImageLoader sharedInstance] cancelRequestForUrl:self.image.URL];
+//    }
 }
 
 
@@ -106,9 +106,9 @@
     if ([aImage isEqual:_image]) {
         return;
     }
-    if (_image != nil) {
-        [[FSImageLoader sharedInstance] cancelRequestForUrl:_image.URL];
-    }
+//    if (_image != nil) {
+//        [[FSImageLoader sharedInstance] cancelRequestForUrl:_image.URL];
+//    }
 
     _image = aImage;
 
@@ -152,15 +152,16 @@
 
         }
         else {
-            [[FSImageLoader sharedInstance] loadImageForURL:_image.URL image:^(UIImage *image, NSError *error) {
-                if (!error) {
-                    _image.image = image;
-                    [self setupImageViewWithImage:image];
-                }
-                else {
-                    [self handleFailedImage];
-                }
-            }];
+			_imageView.imageURL = _image.URL;
+//            [[FSImageLoader sharedInstance] loadImageForURL:_image.URL image:^(UIImage *image, NSError *error) {
+//                if (!error) {
+//                    _image.image = image;
+//                    [self setupImageViewWithImage:image];
+//                }
+//                else {
+//                    [self handleFailedImage];
+//                }
+//            }];
         }
 
     }

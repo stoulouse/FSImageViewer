@@ -25,14 +25,14 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "FSImageSource.h"
-#import "FSImageLoader.h"
+#import "AsyncImageView.h"
 
 @class FSImageScrollView, FSImageTitleView;
 
 @interface FSImageView : UIView <UIScrollViewDelegate>
 
 @property(strong, nonatomic) id <FSImage> image;
-@property(strong, nonatomic, readonly) UIImageView *imageView;
+@property(strong, nonatomic, readonly) AsyncImageView *imageView;
 @property(strong, nonatomic, readonly) FSImageScrollView *scrollView;
 @property(assign, nonatomic) BOOL loading;
 
