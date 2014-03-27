@@ -31,10 +31,11 @@
 
 @interface FSImageView : UIView <UIScrollViewDelegate>
 
-@property(strong, nonatomic) id <FSImage> image;
+@property(strong, nonatomic) NSObject <FSImage>* image;
 @property(strong, nonatomic, readonly) AsyncImageView *imageView;
 @property(strong, nonatomic, readonly) FSImageScrollView *scrollView;
 @property(assign, nonatomic) BOOL loading;
+@property(assign, nonatomic) BOOL observing;
 
 - (void)killScrollViewZoom;
 

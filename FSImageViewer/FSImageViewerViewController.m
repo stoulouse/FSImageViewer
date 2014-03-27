@@ -39,11 +39,11 @@
     UIBarButtonItem *shareButton;
 }
 
-- (id)initWithImageSource:(id <FSImageSource>)aImageSource {
+- (id)initWithImageSource:(NSObject<FSImageSource>*)aImageSource {
     return [self initWithImageSource:aImageSource imageIndex:0];
 }
 
-- (id)initWithImageSource:(id <FSImageSource>)aImageSource imageIndex:(NSInteger)imageIndex {
+- (id)initWithImageSource:(NSObject<FSImageSource>*)aImageSource imageIndex:(NSInteger)imageIndex {
     if ((self = [super init])) {
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(toggleBarsNotification:) name:kFSImageViewerToogleBarsNotificationKey object:nil];
@@ -61,6 +61,9 @@
 }
 
 - (void)dealloc {
+	if (pageIndex < [self.imageSource numberOfImages] && pageIndex >= 0) {
+		[_imageSource[pageIndex] removeObserver:self forKeyPath:@"title"];
+	}
     _scrollView.delegate = nil;
 //    [[FSImageLoader sharedInstance] cancelAllRequests];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -256,6 +259,10 @@
     barsHidden = hidden;
 }
 
+- (void)setTitleBarHidden:(BOOL)hidden {
+    [_titleView hideView:hidden];
+}
+
 - (void)toggleBarsNotification:(NSNotification *)notification {
     [self setBarsHidden:!barsHidden animated:YES];
 }
@@ -308,15 +315,32 @@
     }
 
     if (_titleView) {
-        _titleView.text = _imageSource[pageIndex].title;
+        _titleView.text = [[_imageSource objectAtIndexedSubscript:pageIndex] title];
     }
 
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+	if (_imageSource[pageIndex] == object && [keyPath isEqualToString:@"title"]) {
+		[self setViewState];
+	}
 }
 
 - (void)moveToImageAtIndex:(NSInteger)index animated:(BOOL)animated {
     if (index < [self.imageSource numberOfImages] && index >= 0) {
 
+		if (index != pageIndex && pageIndex < [self.imageSource numberOfImages] && pageIndex >= 0) {
+			[_imageSource[pageIndex] removeObserver:self forKeyPath:@"title"];
+		}
+		
         pageIndex = index;
+		
+		[_imageSource[pageIndex] addObserver:self forKeyPath:@"title" options:NSKeyValueObservingOptionNew context:0];
+		
         [self setViewState];
 
         [self enqueueImageViewAtIndex:index];
@@ -327,12 +351,12 @@
 
         [self.scrollView scrollRectToVisible:((FSImageView *) [_imageViews objectAtIndex:(NSUInteger) index]).frame animated:animated];
 
-        if (_imageSource[pageIndex].failed) {
+        if ([_imageSource[pageIndex] didFail]) {
             [self setBarsHidden:NO animated:YES];
             shareButton.enabled = NO;
         }
         else {
-            if (pageIndex == [self currentImageIndex] && _imageSource[pageIndex].image) {
+            if (pageIndex == [self currentImageIndex] && [_imageSource[pageIndex] image]) {
                 shareButton.enabled = YES;
             }
         }

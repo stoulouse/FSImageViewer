@@ -29,14 +29,14 @@
 @interface FSImageViewerViewController : UIViewController <UIScrollViewDelegate>
 
 /// @param imageSource image data source
-- (id)initWithImageSource:(id <FSImageSource>)imageSource;
+- (id)initWithImageSource:(NSArray<FSImageSource>*)imageSource;
 
 /// @param imageSource image data source
 /// @param imageIndex the index of the first shown image
-- (id)initWithImageSource:(id <FSImageSource>)imageSource imageIndex:(NSInteger)imageIndex;
+- (id)initWithImageSource:(NSArray<FSImageSource>*)imageSource imageIndex:(NSInteger)imageIndex;
 
 /// Image data source
-@property(strong, nonatomic, readonly) id <FSImageSource> imageSource;
+@property(strong, nonatomic, readonly) NSArray<FSImageSource>* imageSource;
 
 /// FSImageView array
 @property(strong, nonatomic) NSMutableArray *imageViews;
@@ -58,5 +58,7 @@
 /// @param index index move to
 /// @param animated should the movevement animated
 - (void)moveToImageAtIndex:(NSInteger)index animated:(BOOL)animated;
+
+- (void)setTitleBarHidden:(BOOL)hidden;
 
 @end

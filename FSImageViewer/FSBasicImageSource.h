@@ -26,7 +26,7 @@
 #import "FSImageSource.h"
 
 /// FSBasicImageSource is a standard implementation of FSImageSource.
-@interface FSBasicImageSource : NSObject<FSImageSource>
+@interface FSBasicImageSource : NSArray<FSImageSource>
 
 /// @param images array of FSImage objects
 - (id)initWithImages:(NSArray*)images;

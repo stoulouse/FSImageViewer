@@ -86,6 +86,10 @@
 //    if (_image) {
 //        [[FSImageLoader sharedInstance] cancelRequestForUrl:self.image.URL];
 //    }
+	if (_image && _observing) {
+		[_image removeObserver:self forKeyPath:@"failed"];
+		_observing = NO;
+	}
 }
 
 
@@ -98,7 +102,24 @@
 
 }
 
-- (void)setImage:(id <FSImage>)aImage {
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
+{
+	if (_image == object && [keyPath isEqualToString:@"failed"]) {
+		NSObject <FSImage>* aImage = object;
+		_loading = NO;
+		self.userInteractionEnabled = YES;
+		[activityView stopAnimating];
+		if (![aImage didFail]) {
+			_imageView.image = _image.image;
+		} else {
+		}
+	}
+}
+
+- (void)setImage:(NSObject <FSImage>*)aImage {
 
     if (!aImage) {
         return;
@@ -110,6 +131,11 @@
 //        [[FSImageLoader sharedInstance] cancelRequestForUrl:_image.URL];
 //    }
 
+	if (_image && _observing) {
+		[_image removeObserver:self forKeyPath:@"failed"];
+		_observing = NO;
+	}
+	
     _image = aImage;
 
     if (_image.image) {
@@ -178,6 +204,11 @@
         }];
 
     } else {
+		[aImage addObserver:self
+				 forKeyPath:@"failed"
+					options:NSKeyValueObservingOptionNew
+					context:0];
+		_observing = YES;
         _loading = YES;
         [activityView startAnimating];
         self.userInteractionEnabled = NO;

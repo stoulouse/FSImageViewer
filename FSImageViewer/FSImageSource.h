@@ -37,7 +37,7 @@
 /// @param index image index
 /// @return image at given index
 /// @warning index must be in the range of the images
-- (id <FSImage>)objectAtIndexedSubscript:(NSUInteger)index;
+- (NSObject <FSImage>*)objectAtIndexedSubscript:(NSUInteger)index;
 
 @end
 

@@ -40,7 +40,7 @@
     
 }
 
-- (id <FSImage>)objectAtIndexedSubscript:(NSUInteger)index {
+- (NSObject <FSImage>*)objectAtIndexedSubscript:(NSUInteger)index {
     return _images[index];
 }
 

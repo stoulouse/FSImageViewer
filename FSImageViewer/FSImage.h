@@ -28,7 +28,7 @@
 /// The remote image URL
 @property(strong, nonatomic, readonly) NSURL *URL;
 /// The title of the image - is displayed as overlay.
-@property(strong, nonatomic, readonly) NSString *title;
+@property(strong, nonatomic) NSString *title;
 /// The image size
 @property(assign, nonatomic) CGSize size;
 /// The UIImage representation - set directly if not from remote.
